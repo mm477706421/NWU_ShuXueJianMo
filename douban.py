@@ -1,8 +1,10 @@
+from operator import attrgetter
 import os
 import requests
 from bs4 import BeautifulSoup
 import json
 import gzip
+import re
 from io import StringIO
 
 url = "https://movie.douban.com/j/search_subjects?type=tv&tag=热门&sort=recommend&page_limit=20&page_start=0"
@@ -39,10 +41,13 @@ if not DEBUG:
             for i in bsdt:
                 print(i)
             
-            
+total_ret = []       
 with open('douban.json',"r") as f:
     dt = json.loads(f.read())
     for i in dt['subjects']:
+        stars = []
+        classes = []
+        episode = 0
         print(i['title']+" "+i['url'])
         url = i['url']
         name = i['title']
@@ -50,3 +55,19 @@ with open('douban.json',"r") as f:
         bsdt = BeautifulSoup(response.text,"html.parser",from_encoding=response.apparent_encoding)
         file  = open("douban/"+name+".html","w")
         file.write(str(response.text))
+        for i in bsdt.find_all('span',attrs={'class':'actor'}):
+            for j in i.find_all('a'):
+                stars.append(j.contents[0])
+        for i in bsdt.find_all('span',attrs={'property':'v:genre'}):
+            classes.append(i.contents[0])
+        for i in bsdt.find_all('div',attrs={'id':'info'}):
+            try:
+                a = re.search(r'<span class="pl">集数:</span>.*',str(i))
+                print(BeautifulSoup(a.group(0),'html.parser').contents[1])
+                episode = int(BeautifulSoup(a.group(0),'html.parser').contents[1])
+            except:
+                print("Pass")
+                pass
+        total_ret.append([name,stars,classes,episode])
+drama_summary = open("drama_summary.txt","w")
+drama_summary.write(str(total_ret))
