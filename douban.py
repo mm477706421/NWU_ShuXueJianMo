@@ -3,9 +3,10 @@ import os
 import requests
 from bs4 import BeautifulSoup
 import json
-import gzip
 import re
 from io import StringIO
+import pandas as pd
+import numpy as np
 
 url = "https://movie.douban.com/j/search_subjects?type=tv&tag=热门&sort=recommend&page_limit=20&page_start=0"
 headers = {

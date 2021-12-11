@@ -18,5 +18,5 @@ for file in filelist:
             print(ret)
             total.append(ret)
             
-for i in sorted(total,key=lambda x:x['avg'],reverse=True)[:34]:
+for i in sorted(total,key=lambda x:x['avg'],reverse=True)[:500]:
     print(i['name'])
