@@ -45,6 +45,8 @@ with open('douban.json',"r") as f:
     for i in dt['subjects']:
         print(i['title']+" "+i['url'])
         url = i['url']
+        name = i['title']
         response = requests.get(url = url,headers=headers)
         bsdt = BeautifulSoup(response.text,"html.parser",from_encoding=response.apparent_encoding)
-        
+        file  = open("douban/"+name+".html","w")
+        file.write(str(response.text))
